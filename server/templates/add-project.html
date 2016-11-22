@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+
+
+    </div>
+    <div class="col-md-12">
+
+      {% from "_formhelpers.html" import render_field %}
+<form method=post action=".">
+  {{ form.hidden_tag()}}
+
+    {{ render_field(form.title) }}
+    {{ render_field(form.reference) }}
+
+
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+{% endfor %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

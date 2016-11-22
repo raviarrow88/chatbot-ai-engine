@@ -75,3 +75,20 @@ Django
 3. docs - documentation generated from the code
 
 
+
+
+
+## References
+
+https://code.tutsplus.com/tutorials/intro-to-flask-adding-a-contact-page--net-28982
+http://flask.pocoo.org/docs/0.11/patterns/wtforms/
+https://flask-mongoengine.readthedocs.io/
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
+
+
+## Dummy Data
+
+```
+use 'chatbot-ai'
+db.projects.insert({'title':'first project','reference':'http://wow.org'})
+```
