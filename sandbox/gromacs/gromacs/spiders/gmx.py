@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy, sys
+from scrapy.selector import Selector
 
 
 class GromacsSpider(scrapy.Spider):
@@ -10,20 +11,14 @@ class GromacsSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        # filename = response.url.split("/")[-2]
-        # with open(filename, 'wb') as f:
-        #     f.write(response.body)
-
-
         filename = response.url.split("/")[-2]
         with open(filename, 'wb') as f:
-            d = response.xpath('//body').extract()[0].encode(sys.stdout.encoding, 'replace')
-            print d
-            f.write(d)
-        #
-        #
-        # for sel in response.xpath('//ul/li'):
-        #     title = sel.xpath('a/text()').extract()
-        #     link = sel.xpath('a/@href').extract()
-        #     desc = sel.xpath('text()').extract()
-        #     print title, link, desc
+            # STAGE 1: extracting the body html
+            body = response.xpath('//body').extract()[0].encode(sys.stdout.encoding, 'replace')
+            for el in Selector(text=body).xpath('//*').extract():
+                # remove script tag
+                if "<script" not in el and "</script>" not in el:
+
+                    # remove styles tag
+                    if "<style" not in el and "</style>" not in el:
+                        f.write(el.encode(sys.stdout.encoding, 'replace'))
