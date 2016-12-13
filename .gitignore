@@ -2,3 +2,4 @@ venv
 .idea/
 playground/
 *.pyc
+*.log
