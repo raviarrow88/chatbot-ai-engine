@@ -25,18 +25,44 @@ cleaner.style = True      # This is True because we want to activate the styles 
 
 
 def scrape_clean_html(url):
+    """
+    This method takes url as inputs and outputs the plane html without dirty classes,
+    <script>, <style> tags
+
+    :param url: a valid url,
+    :return:
+    """
+
     clean_html =  lxml.html.tostring(cleaner.clean_html(lxml.html.parse(url)))
     doc = fromstring(clean_html)
+    TO_CLEAN_TAGS = ['div','li','ul','h1','h2','h3','h4','h5','h6','p','a','img','span','code', 'pre',
+                     'ol','li', 'dl', 'section','nav']
 
+    TO_REMOVE_ATTR = ['class','title','rel','alt','height','width','id','accesskey']
 
+    """
+    id is an important attribute, sometimes it links the two things, but pointing as
+    link
+    """
 
-    tags = ['div','li','ul','h1','h2','h3','h4','h5','h6','p','a','img']
+    # TO_EXCEPT_IDS = ['a', 'div']
+    TO_REMOVE_BLANK_TAGS = ['div','section','span','a']
 
-
-    for tag in tags:
+    for tag in TO_CLEAN_TAGS:
         for el in doc.iter(tag):
-            if "class" in el.attrib:
-                del el.attrib["class"]
+            # if tag not in TO_EXCEPT_IDS:
+            #     if "id" in el.attrib:
+            #         del el.attrib['id']
+
+            if 'href' in el.attrib:
+                if el.attrib['href'].startswith('#'):
+                    del el.attrib['href']
+
+            for ex in TO_REMOVE_ATTR:
+                if ex in el.attrib:
+                    del el.attrib[ex]
+
+
 
 
     final_cleaned_html =  _transform_result(type(clean_html), doc)
@@ -48,6 +74,14 @@ def scrape_clean_html(url):
         f.write(final_cleaned_html)
     """
 
-    return final_cleaned_html
+
+    soup = BeautifulSoup(final_cleaned_html,'lxml')
+    final_cleaned_html = soup.body.prettify().encode('utf-8')
+
+    for tag in TO_REMOVE_BLANK_TAGS:
+        final_cleaned_html = final_cleaned_html.replace("<%s>"%tag,'').replace('</%s>'%tag,'')
+
+
+    return BeautifulSoup(final_cleaned_html,'lxml').body.prettify().encode('utf-8')
 
 
