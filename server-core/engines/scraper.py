@@ -76,7 +76,7 @@ def scrape_clean_html(url):
     with open("final_cleaned_html.txt",'w') as f:
         f.write(final_cleaned_html)
     """
-    final_cleaned_html.replace('¶','')
+    final_cleaned_html=final_cleaned_html.replace('¶','')
 
     soup = BeautifulSoup(final_cleaned_html,'lxml')
     final_cleaned_html = soup.body.encode("utf-8")
