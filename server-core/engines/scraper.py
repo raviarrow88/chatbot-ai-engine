@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 'scraper.py' is created by 'invaana' for the project 'chatbot-ai-engine' on 13 December, 2016. 
 
@@ -18,6 +19,7 @@ from lxml.html.clean import Cleaner
 from lxml.html import fromstring
 from lxml.html import _transform_result
 
+
 cleaner = Cleaner()
 cleaner.javascript = True # This is True because we want to activate the javascript filter
 cleaner.style = True      # This is True because we want to activate the styles & stylesheet filter
@@ -25,6 +27,7 @@ cleaner.style = True      # This is True because we want to activate the styles 
 
 
 def scrape_clean_html(url):
+
     """
     This method takes url as inputs and outputs the plane html without dirty classes,
     <script>, <style> tags
@@ -73,13 +76,27 @@ def scrape_clean_html(url):
     with open("final_cleaned_html.txt",'w') as f:
         f.write(final_cleaned_html)
     """
-
+    final_cleaned_html.replace('¶','')
 
     soup = BeautifulSoup(final_cleaned_html,'lxml')
-    final_cleaned_html = soup.body.prettify().encode('utf-8')
+    final_cleaned_html = soup.body.encode("utf-8")
+    elements = soup.find_all(True)
 
+    #with open("html_data1.log", 'w') as file1:
+    for el in elements:
+        if len(el.text) == 0:
+            el.extract()
+    print soup
+    '''
+            if el.encode("utf-8").lower().lstrip().startswith("<h"):
+                text = el.get_text()
+                el.string = text
+                print el.string
+            file1.write(str(el))
+    '''
     for tag in TO_REMOVE_BLANK_TAGS:
         final_cleaned_html = final_cleaned_html.replace("<%s>"%tag,'').replace('</%s>'%tag,'')
+
 
 
     return BeautifulSoup(final_cleaned_html,'lxml').body.prettify().encode('utf-8')
